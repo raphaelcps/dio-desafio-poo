@@ -6,10 +6,12 @@ import br.com.dio.desafio.dominio.Bootcamp;
 import br.com.dio.desafio.dominio.Curso;
 import br.com.dio.desafio.dominio.Dev;
 import br.com.dio.desafio.dominio.Mentoria;
+import br.com.dio.desafio.exception.BootcampDuplicado;
+import br.com.dio.desafio.exception.ConteudoDuplicado;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws BootcampDuplicado, ConteudoDuplicado {
 
         Curso java = new Curso();
         java.setTitulo("Java");
@@ -61,6 +63,42 @@ public class Main {
         joao.progredir();
         System.out.println("João XP: " + joao.calcularTotalXp() + ", João: " + joao);
         joao.progredir();
+
+        System.out.println("--------------------");
+
+        Dev monica = new Dev();
+        monica.setNome("Monica");
+        monica.inscreverBootcamp(bootcamp);
+        System.out.println("Monica XP: " + monica.calcularTotalXp() + ", Monica: " + monica);
+        
+        monica.progredir(js);
+        System.out.println("Monica XP: " + monica.calcularTotalXp() + ", Monica: " + monica);
+
+        Curso flutter = new Curso();
+        flutter.setTitulo("Flutter");
+        flutter.setDescricao("Curso de Flutter");
+        flutter.setCargaHoraria(15);
+
+        monica.progredir(flutter);
+        System.out.println("Monica XP: " + monica.calcularTotalXp() + ", Monica: " + monica);
+
+        monica.inscreverConteudo(flutter);
+        System.out.println("Monica XP: " + monica.calcularTotalXp() + ", Monica: " + monica);
+        monica.progredir(flutter);
+        System.out.println("Monica XP: " + monica.calcularTotalXp() + ", Monica: " + monica);
+
+        try {
+            monica.inscreverConteudo(flutter);
+        } catch (ConteudoDuplicado e) {
+            System.err.println(e);
+        }
+
+        try {
+            monica.inscreverBootcamp(bootcamp);
+        } catch (BootcampDuplicado e) {
+            System.err.println(e);
+        }
+
     }
 
 }

@@ -1,7 +1,11 @@
 package br.com.dio.desafio.dominio;
 
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
+
+import br.com.dio.desafio.exception.BootcampDuplicado;
+import br.com.dio.desafio.exception.ConteudoDuplicado;
 
 public class Dev {
 
@@ -9,19 +13,48 @@ public class Dev {
     private Set<Conteudo> conteudosInscritos = new LinkedHashSet<>();
     private Set<Conteudo> conteudosConcluidos = new LinkedHashSet<>();
 
-    public void inscreverBootcamp(Bootcamp bootcamp) {
-        this.conteudosInscritos.addAll(bootcamp.getConteudos());
+    public void inscreverBootcamp(Bootcamp bootcamp) throws BootcampDuplicado {
+
+        // verifica já inscrito
+        if (bootcamp.getDevsInscritos().contains(this)) {
+            throw new BootcampDuplicado(bootcamp.getNome());
+        }
+
+        // não inclui conteúdo já concluído
+        bootcamp.getConteudos().forEach(c -> {
+            if (!this.conteudosConcluidos.contains(c)) {
+                this.conteudosInscritos.add(c);
+            }
+        });
+
         bootcamp.getDevsInscritos().add(this);
     }
 
-    public void progredir() {
-        this.conteudosInscritos.stream().findFirst().ifPresentOrElse(
+    public void inscreverConteudo(Conteudo conteudo) throws ConteudoDuplicado {
+
+        if (conteudosInscritos.contains(conteudo) ||
+            conteudosConcluidos.contains(conteudo)) {
+            throw new ConteudoDuplicado(conteudo.getTitulo());
+        }
+        this.conteudosInscritos.add(conteudo);
+    }
+
+    private void doProgredir(Optional<Conteudo> conteudo, String erro) {
+        conteudo.ifPresentOrElse(
             c -> {
                 conteudosConcluidos.add(c);
                 this.conteudosInscritos.remove(c);
             },
-            () -> System.err.println("Você não está matriculado em nenhum conteúdo!")
+            () -> System.err.println(erro)
         );
+    }
+
+    public void progredir() {
+        doProgredir(this.conteudosInscritos.stream().findFirst(), "Você não está matriculado em nenhum conteúdo!");
+    }
+
+    public void progredir(Conteudo conteudo) {
+        doProgredir(this.conteudosInscritos.stream().filter(c -> c.equals(conteudo)).findFirst(), "Você não está matriculado neste conteúdo!");
     }
 
     public double calcularTotalXp() {
@@ -57,8 +90,6 @@ public class Dev {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((nome == null) ? 0 : nome.hashCode());
-        result = prime * result + ((conteudosInscritos == null) ? 0 : conteudosInscritos.hashCode());
-        result = prime * result + ((conteudosConcluidos == null) ? 0 : conteudosConcluidos.hashCode());
         return result;
     }
 
@@ -75,16 +106,6 @@ public class Dev {
             if (other.nome != null)
                 return false;
         } else if (!nome.equals(other.nome))
-            return false;
-        if (conteudosInscritos == null) {
-            if (other.conteudosInscritos != null)
-                return false;
-        } else if (!conteudosInscritos.equals(other.conteudosInscritos))
-            return false;
-        if (conteudosConcluidos == null) {
-            if (other.conteudosConcluidos != null)
-                return false;
-        } else if (!conteudosConcluidos.equals(other.conteudosConcluidos))
             return false;
         return true;
     }
