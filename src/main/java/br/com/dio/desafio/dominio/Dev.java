@@ -10,12 +10,22 @@ public class Dev {
     private Set<Conteudo> conteudosConcluidos = new LinkedHashSet<>();
 
     public void inscreverBootcamp(Bootcamp bootcamp) {
+        this.conteudosInscritos.addAll(bootcamp.getConteudos());
+        bootcamp.getDevsInscritos().add(this);
     }
 
     public void progredir() {
+        this.conteudosInscritos.stream().findFirst().ifPresentOrElse(
+            c -> {
+                conteudosConcluidos.add(c);
+                this.conteudosInscritos.remove(c);
+            },
+            () -> System.err.println("Você não está matriculado em nenhum conteúdo!")
+        );
     }
 
-    public void calcularTotalXp() {
+    public double calcularTotalXp() {
+        return this.conteudosConcluidos.stream().mapToDouble(Conteudo::calculaXp).sum();
     }
 
     public String getNome() {
@@ -79,4 +89,10 @@ public class Dev {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Dev [nome=" + nome + ", conteudosInscritos=" + conteudosInscritos + ", conteudosConcluidos="
+                + conteudosConcluidos + "]";
+    }
+    
 }

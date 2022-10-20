@@ -109,4 +109,11 @@ public class Bootcamp {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Bootcamp [nome=" + nome + ", descricao=" + descricao + ", dataInicial=" + dataInicial + ", dataFinal="
+                + dataFinal + ", devsInscritos=" + devsInscritos + ", conteudos=" + conteudos + "]";
+    }
+
+    
 }

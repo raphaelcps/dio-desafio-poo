@@ -2,7 +2,9 @@ package br.com.dio.desafio;
 
 import java.time.LocalDate;
 
+import br.com.dio.desafio.dominio.Bootcamp;
 import br.com.dio.desafio.dominio.Curso;
+import br.com.dio.desafio.dominio.Dev;
 import br.com.dio.desafio.dominio.Mentoria;
 
 public class Main {
@@ -28,6 +30,37 @@ public class Main {
         System.out.println(js);
         System.out.println(mentoria);
 
+        Bootcamp bootcamp = new Bootcamp();
+        bootcamp.setNome("Bootcamp Java");
+        bootcamp.setDescricao("Bootcamp Java");
+        bootcamp.getConteudos().add(java);
+        bootcamp.getConteudos().add(js);
+        bootcamp.getConteudos().add(mentoria);
+
+        System.out.println(bootcamp);
+
+        Dev maria = new Dev();
+        maria.setNome("Maria");
+        maria.inscreverBootcamp(bootcamp);
+        System.out.println("Maria XP: " + maria.calcularTotalXp() + ", maria: " + maria);
+        maria.progredir();
+        System.out.println("Maria XP: " + maria.calcularTotalXp() + ", maria: " + maria);
+        maria.progredir();
+        System.out.println("Maria XP: " + maria.calcularTotalXp() + ", maria: " + maria);
+
+        System.out.println("--------------------");
+
+        Dev joao = new Dev();
+        joao.setNome("João");
+        joao.inscreverBootcamp(bootcamp);
+        System.out.println("João XP: " + joao.calcularTotalXp() + ", João: " + joao);
+        joao.progredir();
+        System.out.println("João XP: " + joao.calcularTotalXp() + ", João: " + joao);
+        joao.progredir();
+        System.out.println("João XP: " + joao.calcularTotalXp() + ", João: " + joao);
+        joao.progredir();
+        System.out.println("João XP: " + joao.calcularTotalXp() + ", João: " + joao);
+        joao.progredir();
     }
 
 }
